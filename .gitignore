@@ -36,3 +36,5 @@ venv/
 # Saídas locais de experimentos com dados privados
 experiments/private_results/
 logs/
+*.egg-info/
+*.egg-info/
