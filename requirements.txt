@@ -1,0 +1,17 @@
+torch
+torchvision
+facenet-pytorch
+insightface
+onnxruntime
+numpy
+scikit-learn
+scipy
+matplotlib
+pandas
+pillow
+opencv-python
+pyyaml
+fastapi
+uvicorn[standard]
+python-multipart
+pytest

@@ -1,0 +1,38 @@
+# --- DADOS PRIVADOS (LGPD) — nunca versionar ---
+data/private/
+data/familia/
+data/amigos/
+data/teste_local/
+faces/
+embeddings/
+database/
+consent/
+checkpoints/private/
+*.db
+*.sqlite
+*.sqlite3
+
+# Datasets públicos (baixar da fonte oficial; ver data/README.md)
+data/public/
+
+# Checkpoints e pesos (só versionar se derivados exclusivamente de dados públicos e licença permitir)
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.safetensors
+weights.bin
+
+# Python / ambiente
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.ipynb_checkpoints/
+.pytest_cache/
+.ruff_cache/
+
+# Saídas locais de experimentos com dados privados
+experiments/private_results/
+logs/
