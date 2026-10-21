@@ -16,7 +16,7 @@ Ao clonar, a aplicação inicia com "Nenhuma pessoa cadastrada".
 
 | Dataset | Fonte oficial | Finalidade | Licença / termos | Uso no projeto |
 |---|---|---|---|---|
-| LFW — Labeled Faces in the Wild | https://vis-www.cs.umass.edu/lfw/ | Pesquisa em reconhecimento facial | TODO: confirmar termos na fonte oficial (página indisponível em 15/10/2026). Arquivo obtido do espelho figshare usado pelo scikit-learn; SHA-256 conferido. | Benchmark e fine-tuning, com divisão por identidade (seed 42): 1176/252/252 identidades em treino/validação/teste. |
+| LFW — Labeled Faces in the Wild | https://vis-www.cs.umass.edu/lfw/ | Pesquisa em reconhecimento facial | Sem licença explícita localizada. Aviso oficial (Wayback, captura de 02/01/2024): benchmark público de pesquisa para verificação facial, sem recomendação de uso comercial. Página oficial indisponível em 20/10/2026. Arquivo obtido do espelho figshare usado pelo scikit-learn; SHA-256 conferido. | Benchmark e fine-tuning, com divisão por identidade (seed 42): 1176/252/252 identidades em treino/validação/teste. |
 
 ## Modelos pré-treinados
 
