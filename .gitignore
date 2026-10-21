@@ -38,3 +38,4 @@ experiments/private_results/
 logs/
 *.egg-info/
 *.egg-info/
+.env.*

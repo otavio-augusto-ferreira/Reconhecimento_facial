@@ -14,3 +14,4 @@ tqdm==4.66.4
 pytest==8.2.2
 
 # Parte 2 (aplicação web): adicionar fastapi, uvicorn e python-multipart quando a aplicação começar.
+openai==3.35.1
