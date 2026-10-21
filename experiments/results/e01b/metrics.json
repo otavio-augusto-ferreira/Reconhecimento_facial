@@ -1,0 +1,219 @@
+{
+  "experiment": "E01b",
+  "limited_to_identities": null,
+  "config": {
+    "experiment": "E01b",
+    "seed": 42,
+    "image_root": "data/public/lfw",
+    "splits_manifest": "experiments/splits/lfw_seed42.json",
+    "cache_dir": "data/public/cache",
+    "output_dir": "experiments/results/e01b",
+    "device": "cpu",
+    "detector": {
+      "min_confidence": 0.9,
+      "min_face_size": 20,
+      "margin_ratio": 0.0,
+      "rotate_to_eyes": false
+    },
+    "model": {
+      "pretrained": "vggface2",
+      "batch_size": 32
+    },
+    "pairs": {
+      "val": 40000,
+      "test": 40000
+    },
+    "score": "cosine",
+    "operating_points": [
+      {
+        "name": "acuracia_maxima",
+        "criterion": "accuracy"
+      },
+      {
+        "name": "eer",
+        "criterion": "eer"
+      },
+      {
+        "name": "far_1pct",
+        "criterion": "far",
+        "far_target": 0.01
+      },
+      {
+        "name": "far_0.1pct",
+        "criterion": "far",
+        "far_target": 0.001
+      }
+    ],
+    "registered_people": [
+      5,
+      10,
+      20
+    ]
+  },
+  "versions": {
+    "python": "3.12.2",
+    "torch": "2.2.2",
+    "torchvision": "0.17.2",
+    "facenet-pytorch": "2.6.0",
+    "numpy": "1.26.4",
+    "scikit-learn": "1.4.2",
+    "Pillow": "10.2.0"
+  },
+  "counts": {
+    "val": {
+      "images_embedded": 1218,
+      "pairs": 17562,
+      "positive": 8781,
+      "negative": 8781
+    },
+    "test": {
+      "images_embedded": 1060,
+      "pairs": 8344,
+      "positive": 4172,
+      "negative": 4172
+    }
+  },
+  "operating_points": [
+    {
+      "name": "acuracia_maxima",
+      "criterion": "accuracy",
+      "far_target": null,
+      "threshold": 0.42830216131284715,
+      "val": {
+        "far": 0.007060699236988954,
+        "frr": 0.06878487643776335,
+        "accuracy": 0.9620772121626239,
+        "f1": 0.9608695652173913,
+        "confusion": {
+          "tp": 8177,
+          "fn": 604,
+          "fp": 62,
+          "tn": 8719
+        }
+      },
+      "test": {
+        "far": 0.007670182166826462,
+        "frr": 0.09539789069990412,
+        "accuracy": 0.9484659635666347,
+        "f1": 0.9461017798947104,
+        "confusion": {
+          "tp": 3774,
+          "fn": 398,
+          "fp": 32,
+          "tn": 4140
+        }
+      },
+      "expected_unknown_accepted_test": {
+        "5": 0.03776708910825355,
+        "10": 0.07410782519679637,
+        "20": 0.14272368063819385
+      }
+    },
+    {
+      "name": "eer",
+      "criterion": "eer",
+      "far_target": null,
+      "threshold": 0.2985704821398115,
+      "val": {
+        "far": 0.05067759936225942,
+        "frr": 0.05067759936225942,
+        "accuracy": 0.9493224006377405,
+        "f1": 0.9493224006377405,
+        "confusion": {
+          "tp": 8336,
+          "fn": 445,
+          "fp": 445,
+          "tn": 8336
+        }
+      },
+      "test": {
+        "far": 0.046021093000958774,
+        "frr": 0.07118887823585811,
+        "accuracy": 0.9413950143815916,
+        "f1": 0.9406481369098192,
+        "confusion": {
+          "tp": 3875,
+          "fn": 297,
+          "fp": 192,
+          "tn": 3980
+        }
+      },
+      "expected_unknown_accepted_test": {
+        "5": 0.20987853265774759,
+        "10": 0.37570806684492586,
+        "20": 0.6102595821975004
+      }
+    },
+    {
+      "name": "far_1pct",
+      "criterion": "far",
+      "far_target": 0.01,
+      "threshold": 0.41444054354114535,
+      "val": {
+        "far": 0.009907755380936112,
+        "frr": 0.06696276050563717,
+        "accuracy": 0.9615647420567134,
+        "f1": 0.9604360822929489,
+        "confusion": {
+          "tp": 8193,
+          "fn": 588,
+          "fp": 87,
+          "tn": 8694
+        }
+      },
+      "test": {
+        "far": 0.009348034515819751,
+        "frr": 0.09204218600191755,
+        "accuracy": 0.9493048897411314,
+        "f1": 0.9471183897987248,
+        "confusion": {
+          "tp": 3788,
+          "fn": 384,
+          "fp": 39,
+          "tn": 4133
+        }
+      },
+      "expected_unknown_accepted_test": {
+        "5": 0.04587444582605482,
+        "10": 0.08964442687226204,
+        "20": 0.17125273047526768
+      }
+    },
+    {
+      "name": "far_0.1pct",
+      "criterion": "far",
+      "far_target": 0.001,
+      "threshold": 0.5404070017179701,
+      "val": {
+        "far": 0.0009110579660630908,
+        "frr": 0.09953308279239266,
+        "accuracy": 0.9497779296207721,
+        "f1": 0.9471729755630091,
+        "confusion": {
+          "tp": 7907,
+          "fn": 874,
+          "fp": 8,
+          "tn": 8773
+        }
+      },
+      "test": {
+        "far": 0.0016778523489932886,
+        "frr": 0.15532118887823587,
+        "accuracy": 0.9215004793863855,
+        "f1": 0.914968194210048,
+        "confusion": {
+          "tp": 3524,
+          "fn": 648,
+          "fp": 7,
+          "tn": 4165
+        }
+      },
+      "expected_unknown_accepted_test": {
+        "5": 0.008361157055009727,
+        "10": 0.016652405162720818,
+        "20": 0.033027507727738215
+      }
+    }
+  ],
+  "note": "Thresholds escolhidos só na validação. FAR do teste com poucos negativos tem incerteza grande; veja os números absolutos em confusion."
+}

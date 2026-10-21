@@ -1,6 +1,6 @@
 # 004 — Pessoa desconhecida
 
-**Status**: rascunho
+**Status**: implementada
 
 ## Problema
 O sistema não deve forçar toda face a uma identidade conhecida.
@@ -13,3 +13,6 @@ O sistema não deve forçar toda face a uma identidade conhecida.
 ## Critérios de aceitação
 - CA1: face de pessoa não cadastrada → "desconhecido".
 - CA2: FAR/FRR no teste reportados no README sem identificar participantes.
+
+## Implementação
+O threshold vem de `configs/app.yaml` (`recognition.threshold`). Valor atual: 0,5404, escolhido na validação do E01b como o menor FRR com FAR ≤ 0,1% (ADR-003). Aceita-se quando a similaridade é maior ou igual ao threshold.

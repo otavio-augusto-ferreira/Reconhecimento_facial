@@ -82,3 +82,27 @@ def test_single_class_is_rejected():
         far_frr(np.array([1, 1]), np.array([0.1, 0.2]), 0.5)
     with pytest.raises(ValueError):
         select_threshold(np.array([0, 0]), np.array([0.1, 0.2]))
+
+
+def test_select_threshold_far_respeita_o_alvo_com_o_menor_frr():
+    rng = np.random.default_rng(3)
+    y = np.array([1] * 2000 + [0] * 2000)
+    s = np.concatenate([rng.normal(0.6, 0.15, 2000), rng.normal(0.2, 0.15, 2000)])
+    thr = select_threshold(y, s, "far", far_target=0.01)
+    far, frr = far_frr(y, s, thr)
+    assert far <= 0.01
+    # o threshold imediatamente menor já passaria do alvo: este é o menor possível
+    smaller = np.max(s[s < thr])
+    assert far_frr(y, s, smaller)[0] > 0.01
+    # alvo mais rígido -> threshold maior e FRR maior
+    thr2 = select_threshold(y, s, "far", far_target=0.001)
+    assert thr2 > thr and far_frr(y, s, thr2)[1] >= frr
+
+
+def test_select_threshold_far_exige_alvo_valido():
+    y = np.array([1, 1, 0, 0])
+    s = np.array([0.9, 0.8, 0.2, 0.1])
+    with pytest.raises(ValueError):
+        select_threshold(y, s, "far")
+    with pytest.raises(ValueError):
+        select_threshold(y, s, "far", far_target=1.5)

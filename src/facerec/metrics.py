@@ -53,7 +53,7 @@ def _curves(y, s) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.nd
     cand = np.unique(np.asarray(s, dtype=np.float64))
     n_pos_below = np.searchsorted(pos, cand, side="left")  # positivos rejeitados
     n_neg_below = np.searchsorted(neg, cand, side="left")  # negativos rejeitados
-    far = 1.0 - n_neg_below / len(neg)
+    far = (len(neg) - n_neg_below) / len(neg)  # contagem inteira: evita erro de arredondamento (1 - x)
     frr = n_pos_below / len(pos)
     return cand, far, frr, len(pos) - n_pos_below, n_neg_below
 
@@ -68,17 +68,24 @@ def roc_auc_eer(y, s) -> tuple[float, float, float]:
     return auc, float((far[i] + frr[i]) / 2.0), float(cand[i])
 
 
-def select_threshold(y, s, criterion: str = "accuracy") -> float:
+def select_threshold(y, s, criterion: str = "accuracy", far_target: float | None = None) -> float:
     """Escolhe o threshold. Use SOMENTE com os scores do conjunto de validação.
 
     - "accuracy": maximiza a acurácia; em empate, o menor threshold.
     - "eer": o threshold em que FAR e FRR mais se aproximam.
+    - "far": o MENOR threshold (logo, o menor FRR) com FAR <= far_target. Serve para sistemas em que
+      aceitar a pessoa errada é mais grave que rejeitar a pessoa certa. Exige `far_target`.
     """
     cand, far, frr, tp, tn = _curves(y, s)
     if criterion == "accuracy":
         return float(cand[int(np.argmax((tp + tn) / len(np.asarray(y))))])
     if criterion == "eer":
         return float(cand[int(np.argmin(np.abs(far - frr)))])
+    if criterion == "far":
+        if far_target is None or not 0.0 <= far_target <= 1.0:
+            raise ValueError("o critério 'far' exige far_target entre 0 e 1")
+        ok = far <= far_target  # o FAR não aumenta quando o threshold sobe
+        return float(cand[int(np.argmax(ok))] if ok.any() else cand[-1])
     raise ValueError(f"critério de threshold desconhecido: {criterion!r}")
 
 

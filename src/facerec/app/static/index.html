@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reconhecedor Facial</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <h1>Reconhecedor Facial</h1>
+    <p id="serverInfo" class="chip" aria-live="polite">Conectando ao servidor…</p>
+  </header>
+
+  <div id="banner" class="banner hidden" role="alert"></div>
+
+  <nav class="tabs" role="tablist" aria-label="Seções">
+    <button role="tab" id="tabBtn-recognize" data-tab="recognize" aria-selected="true">Reconhecer</button>
+    <button role="tab" id="tabBtn-enroll" data-tab="enroll" aria-selected="false">Cadastrar</button>
+    <button role="tab" id="tabBtn-persons" data-tab="persons" aria-selected="false">Pessoas cadastradas</button>
+  </nav>
+
+  <main>
+    <section id="cameraPanel" class="card">
+      <div class="stage">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="overlay"></canvas>
+        <div id="cameraPlaceholder" class="placeholder">Câmera desligada</div>
+      </div>
+      <div class="row">
+        <button id="btnCamera" class="primary">Ligar câmera</button>
+        <span id="cameraMsg" class="msg" role="alert"></span>
+      </div>
+    </section>
+
+    <section id="tab-recognize" class="card tab">
+      <h2>Reconhecer</h2>
+      <p class="hint">A câmera é analisada continuamente. Faces com similaridade abaixo do limiar aparecem como “Desconhecido”.</p>
+      <div class="row">
+        <button id="btnRecognize" disabled>Iniciar reconhecimento</button>
+        <button id="btnRecognizeOnce" disabled>Analisar uma imagem enviada…</button>
+        <input id="recognizeFile" type="file" accept="image/jpeg,image/png" hidden>
+      </div>
+      <p id="recStatus" class="msg" aria-live="polite"></p>
+      <ul id="recList" class="faces"></ul>
+    </section>
+
+    <section id="tab-enroll" class="card tab hidden">
+      <h2>Cadastrar pessoa</h2>
+      <p class="hint">Use apenas fotos de pessoas adultas que consentiram. Nenhuma foto é guardada: só um vetor numérico (embedding), no seu computador. Tire de 3 a 5 fotos, com poses e iluminação ligeiramente diferentes.</p>
+      <label class="field">Nome
+        <input id="personName" type="text" maxlength="80" autocomplete="off" placeholder="Nome ou identificador">
+      </label>
+      <div class="row">
+        <button id="btnShot" disabled>Capturar foto da câmera</button>
+        <button id="btnUpload">Enviar arquivos…</button>
+        <input id="enrollFiles" type="file" accept="image/jpeg,image/png" multiple hidden>
+      </div>
+      <ul id="shots" class="shots"></ul>
+      <div class="row">
+        <button id="btnEnroll" class="primary" disabled>Cadastrar</button>
+        <button id="btnClearShots" disabled>Descartar fotos</button>
+      </div>
+      <p id="enrollMsg" class="msg" role="alert"></p>
+    </section>
+
+    <section id="tab-persons" class="card tab hidden">
+      <h2>Pessoas cadastradas</h2>
+      <p id="personsEmpty" class="hint hidden">Nenhuma pessoa cadastrada.</p>
+      <table id="personsTable" class="table hidden">
+        <thead><tr><th>Nome</th><th>Imagens</th><th>Cadastro</th><th></th></tr></thead>
+        <tbody id="personsBody"></tbody>
+      </table>
+      <p id="personsMsg" class="msg" role="alert"></p>
+    </section>
+  </main>
+
+  <footer>
+    Execução 100% local. Fotos não são armazenadas; ao excluir uma pessoa, seus vetores são apagados do banco.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

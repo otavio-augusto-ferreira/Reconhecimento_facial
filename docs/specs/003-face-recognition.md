@@ -1,6 +1,6 @@
 # 003 — Reconhecimento facial
 
-**Status**: rascunho
+**Status**: implementada
 
 ## Problema
 Comparar o embedding de uma face com os cadastrados e decidir quem é.
@@ -15,3 +15,6 @@ Comparar o embedding de uma face com os cadastrados e decidir quem é.
 - CA1: pessoa cadastrada, imagem nova → identidade correta com score acima do threshold.
 - CA2: tempo de inferência por face medido e registrado (CPU).
 - CA3: banco vazio → resultado "desconhecido", sem erro.
+
+## Implementação
+`FaceService.recognize`: detecta todas as faces da imagem, gera um embedding por face e compara com os embeddings cadastrados por similaridade de cosseno (produto escalar de vetores normalizados). A pessoa é a de maior similaridade entre as suas imagens cadastradas. A resposta traz o tempo de detecção e de embedding em ms (CA2). Testes: `tests/test_app_service.py`.
