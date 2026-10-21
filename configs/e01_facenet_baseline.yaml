@@ -1,0 +1,27 @@
+# E01 — FaceNet (InceptionResnetV1, VGGFace2) pré-treinado, sem fine-tuning.
+# Rode a partir da raiz do repositório:
+#   python experiments/e01_facenet_baseline.py --config configs/e01_facenet_baseline.yaml
+experiment: E01
+seed: 42
+image_root: data/public/lfw                       # LFW, baixado localmente (não vai ao Git)
+splits_manifest: experiments/splits/lfw_seed42.json
+cache_dir: data/public/cache                      # ignorado pelo .gitignore (data/public/)
+output_dir: experiments/results/e01               # resultados agregados do dataset público
+device: cpu
+
+detector:                                         # spec 001
+  min_confidence: 0.9
+  min_face_size: 20
+  margin_ratio: 0.0                               # fração acrescentada de cada lado da caixa
+  rotate_to_eyes: false                           # alinhamento por rotação (variável para experimentos futuros)
+
+model:
+  pretrained: vggface2
+  batch_size: 32
+
+pairs:                                            # pares de verificação, 50% positivos e 50% negativos
+  val: 3000
+  test: 3000
+
+score: cosine                                     # cosine | euclidean
+threshold_criterion: accuracy                     # accuracy | eer — escolhido SOMENTE na validação

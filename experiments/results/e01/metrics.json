@@ -1,0 +1,116 @@
+{
+  "experiment": "E01",
+  "limited_to_identities": null,
+  "config": {
+    "experiment": "E01",
+    "seed": 42,
+    "image_root": "data/public/lfw",
+    "splits_manifest": "experiments/splits/lfw_seed42.json",
+    "cache_dir": "data/public/cache",
+    "output_dir": "experiments/results/e01",
+    "device": "cpu",
+    "detector": {
+      "min_confidence": 0.9,
+      "min_face_size": 20,
+      "margin_ratio": 0.0,
+      "rotate_to_eyes": false
+    },
+    "model": {
+      "pretrained": "vggface2",
+      "batch_size": 32
+    },
+    "pairs": {
+      "val": 3000,
+      "test": 3000
+    },
+    "score": "cosine",
+    "threshold_criterion": "accuracy"
+  },
+  "versions": {
+    "python": "3.12.2",
+    "torch": "2.2.2",
+    "torchvision": "0.17.2",
+    "facenet-pytorch": "2.6.0",
+    "numpy": "1.26.4",
+    "scikit-learn": "1.4.2",
+    "Pillow": "10.2.0"
+  },
+  "hardware": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 23 Model 96 Stepping 1, AuthenticAMD",
+    "cpu_count": 8,
+    "torch_threads": 4,
+    "device": "cpu"
+  },
+  "counts": {
+    "val": {
+      "images": 1218,
+      "embedded": 1218,
+      "failed": 0,
+      "identities": 252,
+      "pairs": 3000
+    },
+    "test": {
+      "images": 1060,
+      "embedded": 1060,
+      "failed": 0,
+      "identities": 252,
+      "pairs": 3000
+    }
+  },
+  "timing_seconds": {
+    "images_processed": 2278,
+    "detect_total": 139.47,
+    "embed_total": 79.87,
+    "detect_per_image": 0.0612,
+    "embed_per_image": 0.0351
+  },
+  "threshold": {
+    "criterion": "accuracy",
+    "value": 0.400886407195848,
+    "chosen_on": "val"
+  },
+  "val": {
+    "threshold": 0.400886407195848,
+    "accuracy": 0.9643333333333334,
+    "precision": 0.9894588896697118,
+    "recall": 0.9386666666666666,
+    "f1": 0.9633937735203558,
+    "far": 0.01,
+    "frr": 0.06133333333333333,
+    "roc_auc": 0.9778493333333333,
+    "eer": 0.050000000000000024,
+    "eer_threshold": 0.2899191553332962,
+    "confusion": {
+      "tp": 1408,
+      "fn": 92,
+      "fp": 15,
+      "tn": 1485
+    },
+    "n_pairs": 3000,
+    "n_positive": 1500,
+    "n_negative": 1500
+  },
+  "test": {
+    "threshold": 0.400886407195848,
+    "accuracy": 0.9476666666666667,
+    "precision": 0.989075018208303,
+    "recall": 0.9053333333333333,
+    "f1": 0.945353289244692,
+    "far": 0.01,
+    "frr": 0.09466666666666666,
+    "roc_auc": 0.9656884444444443,
+    "eer": 0.07333333333333335,
+    "eer_threshold": 0.2602855418538785,
+    "confusion": {
+      "tp": 1358,
+      "fn": 142,
+      "fp": 15,
+      "tn": 1485
+    },
+    "n_pairs": 3000,
+    "n_positive": 1500,
+    "n_negative": 1500
+  },
+  "test_eer_note": "O EER do teste é só uma medida da separação das distribuições; o threshold usado no teste é o da validação."
+}

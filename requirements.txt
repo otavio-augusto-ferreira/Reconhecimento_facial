@@ -1,17 +1,16 @@
-torch
-torchvision
-facenet-pytorch
-insightface
-onnxruntime
-numpy
-scikit-learn
-scipy
-matplotlib
-pandas
-pillow
-opencv-python
-pyyaml
-fastapi
-uvicorn[standard]
-python-multipart
-pytest
+# Experimentos (Parte 1). Testado com Python 3.12 (64 bits).
+# Versões fixas: o facenet-pytorch 2.6.0 exige torch 2.2.x, torchvision < 0.18,
+# numpy < 2 e Pillow < 10.3. Não atualize um pacote sem atualizar os demais.
+torch==2.2.2
+torchvision==0.17.2
+facenet-pytorch==2.6.0
+numpy==1.26.4
+Pillow==10.2.0
+scikit-learn==1.4.2
+scipy==1.13.1
+matplotlib==3.8.4
+PyYAML==6.0.1
+tqdm==4.66.4
+pytest==8.2.2
+
+# Parte 2 (aplicação web): adicionar fastapi, uvicorn e python-multipart quando a aplicação começar.

@@ -10,7 +10,7 @@ import hashlib
 import json
 import random
 from collections import defaultdict
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 Item = tuple[str, str]
 Splits = dict[str, list[Item]]
@@ -167,7 +167,7 @@ def save_splits(splits: Splits, out: str | Path, root: str | Path, seed: int) ->
     data = {
         "seed": seed,
         "splits": {
-            name: [[str(Path(p).relative_to(root)), i] for p, i in items]
+            name: [[Path(p).relative_to(root).as_posix(), i] for p, i in items]
             for name, items in splits.items()
         },
     }
@@ -179,7 +179,8 @@ def save_splits(splits: Splits, out: str | Path, root: str | Path, seed: int) ->
 def load_splits(path: str | Path, root: str | Path) -> Splits:
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     root = Path(root)
+    # Manifestos gerados no Windows podem ter "\" nos caminhos; "/" funciona em todos os sistemas.
     return {
-        name: [(str(root / rel), identity) for rel, identity in items]
+        name: [(str(root / PureWindowsPath(rel).as_posix()), identity) for rel, identity in items]
         for name, items in data["splits"].items()
     }

@@ -105,3 +105,28 @@ def test_invalid_ratios_and_too_few_identities():
         split_by_identity(synthetic_items(), ratios=(0.5, 0.2, 0.2))
     with pytest.raises(ValueError):
         split_by_identity(synthetic_items(n_ids=2))
+
+
+def test_manifest_with_windows_backslashes_loads_on_any_system(tmp_path):
+    """Manifestos criados no Windows (com "\\") precisam funcionar no Linux/Colab."""
+    import json
+
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(
+        json.dumps({"seed": 1, "splits": {"train": [["Ana\\Ana_0001.jpg", "Ana"]], "val": [["Bia/Bia_0001.jpg", "Bia"]]}}),
+        encoding="utf-8",
+    )
+    splits = load_splits(manifest, tmp_path)
+    assert splits["train"][0][0] == str(tmp_path / "Ana/Ana_0001.jpg")
+    assert splits["val"][0][0] == str(tmp_path / "Bia/Bia_0001.jpg")
+
+
+def test_saved_manifest_uses_forward_slashes(tmp_path):
+    import json
+
+    img = tmp_path / "Ana" / "Ana_0001.jpg"
+    img.parent.mkdir()
+    img.write_bytes(b"x")
+    manifest = tmp_path / "m.json"
+    save_splits({"train": [(str(img), "Ana")]}, manifest, tmp_path, seed=1)
+    assert json.loads(manifest.read_text(encoding="utf-8"))["splits"]["train"][0][0] == "Ana/Ana_0001.jpg"
