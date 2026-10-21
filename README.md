@@ -26,7 +26,7 @@ TODO: listar modelo, fonte e licença.
 
 | Experimento | Modelo | Estratégia | Dataset | Accuracy | F1 | Observação |
 |---|---|---|---|---|---|---|
-| E01 | TODO | baseline | público | | | |
+| E01 | FaceNet (InceptionResnetV1, VGGFace2) | pré-treinado, sem fine-tuning | público (LFW) | 0,9477 | 0,9454 | Teste, cosseno, threshold 0,4009 escolhido na validação. AUC 0,9657, EER 0,0733, FAR 0,0100, FRR 0,0947 |
 
 Resultados com o dataset privado são apresentados apenas de forma agregada.
 
