@@ -1,0 +1,55 @@
+# E04 — fine-tuning parcial (último estágio) com triplet loss (batch-hard)
+# Rode a partir da raiz do repositório (CPU local ou GPU do Colab; veja docs/COLAB.md):
+#   python experiments/e02_finetune.py --config configs/e04_partial_triplet.yaml
+experiment: E04
+seed: 42
+image_root: data/public/lfw                       # LFW (dados públicos; não vai ao Git)
+splits_manifest: experiments/splits/lfw_seed42.json
+cache_dir: data/public/cache                      # recortes de face em cache (ignorado pelo Git)
+output_dir: experiments/results/e04            # resultados agregados do dataset público
+checkpoint_dir: checkpoints/public                # pesos treinados: *.pt está no .gitignore
+device: auto                                      # auto = GPU se houver, senão CPU
+
+detector:                                         # idêntico ao E01
+  min_confidence: 0.9
+  min_face_size: 20
+  margin_ratio: 0.0
+  rotate_to_eyes: false
+
+model:
+  pretrained: vggface2
+
+data:
+  max_images_per_identity: 20                     # evita que pessoas muito fotografadas dominem o treino
+
+train:
+  mode: last_block                                    # last_block (último estágio + projeção) | full (rede toda)
+  loss: triplet                                    # ce | arcface | triplet
+  epochs: 10
+  batch_size: 64
+  lr_backbone: 5.0e-5
+  lr_head: 1.0e-3
+  weight_decay: 1.0e-4
+  scale: 30.0                                     # ce/arcface: escala dos logits de cosseno
+  margin: 0.0                                # arcface: margem angular (rad); ce ignora
+  head_init: prototypes                           # prototypes | random: início do classificador
+  triplet_margin: 0.2
+  p: 16                                           # triplet: identidades por lote
+  k: 4                                            # triplet: imagens por identidade
+  steps_per_epoch: null                           # triplet: null = imagens de treino // (p * k)
+  augment: true
+  select_metric: eer                              # eer | auc — escolhe a época SÓ na validação
+
+pairs:                                            # os MESMOS pares do E01b
+  val: 40000
+  test: 40000
+
+score: cosine
+
+operating_points:                                 # cada um escolhe o threshold SÓ na validação
+  - {name: acuracia_maxima, criterion: accuracy}
+  - {name: eer, criterion: eer}
+  - {name: far_1pct, criterion: far, far_target: 0.01}
+  - {name: far_0.1pct, criterion: far, far_target: 0.001}
+
+registered_people: [5, 10, 20]

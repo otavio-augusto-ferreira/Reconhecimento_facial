@@ -21,13 +21,8 @@ import yaml
 from e01_facenet_baseline import SCORE_FUNCTIONS, limit_identities, versions
 
 from facerec.data.splits import load_splits, make_verification_pairs
-from facerec.metrics import evaluate_at_threshold, select_threshold
+from facerec.evaluation import format_operating_points, operating_points
 from facerec.pipeline import compute_embeddings
-
-
-def expected_false_accepts(far: float, n_registered: int) -> float:
-    """Chance de um desconhecido ser aceito por ALGUMA das N pessoas cadastradas, supondo pares independentes."""
-    return 1.0 - (1.0 - far) ** n_registered
 
 
 def main() -> None:
@@ -96,24 +91,7 @@ def main() -> None:
             "negative": int((1 - labels[name]).sum()),
         }
 
-    rows = []
-    for op in cfg["operating_points"]:
-        thr = select_threshold(labels["val"], scores["val"], op["criterion"], op.get("far_target"))
-        val = evaluate_at_threshold(labels["val"], scores["val"], thr)
-        test = evaluate_at_threshold(labels["test"], scores["test"], thr)
-        rows.append(
-            {
-                "name": op["name"],
-                "criterion": op["criterion"],
-                "far_target": op.get("far_target"),
-                "threshold": thr,
-                "val": {k: val[k] for k in ("far", "frr", "accuracy", "f1", "confusion")},
-                "test": {k: test[k] for k in ("far", "frr", "accuracy", "f1", "confusion")},
-                "expected_unknown_accepted_test": {
-                    str(n): expected_false_accepts(test["far"], n) for n in cfg["registered_people"]
-                },
-            }
-        )
+    rows = operating_points(labels, scores, cfg["operating_points"], cfg["registered_people"])
 
     report = {
         "experiment": cfg["experiment"],
@@ -128,18 +106,7 @@ def main() -> None:
 
     print(f"\n=== {cfg['experiment']} | pares: validação {counts['val']['pairs']}, teste {counts['test']['pairs']}"
           f" (negativos: {counts['val']['negative']} / {counts['test']['negative']})")
-    head = f"{'ponto de operação':18}{'threshold':>10}{'val FAR':>9}{'val FRR':>9}{'teste FAR':>11}{'teste FRR':>11}{'falsos aceites':>16}"
-    print(head)
-    for r in rows:
-        c = r["test"]["confusion"]
-        print(
-            f"{r['name']:18}{r['threshold']:10.4f}{r['val']['far']:9.4f}{r['val']['frr']:9.4f}"
-            f"{r['test']['far']:11.4f}{r['test']['frr']:11.4f}{c['fp']:>8} de {c['fp'] + c['tn']:<5}"
-        )
-    print("\nchance de um desconhecido ser aceito por alguma das N pessoas cadastradas (FAR do teste):")
-    print(f"{'ponto de operação':18}" + "".join(f"{'N=' + str(n):>9}" for n in cfg["registered_people"]))
-    for r in rows:
-        print(f"{r['name']:18}" + "".join(f"{r['expected_unknown_accepted_test'][str(n)]:9.3f}" for n in cfg["registered_people"]))
+    print(format_operating_points(rows, cfg["registered_people"]))
     print(f"\nresultados em {out_dir}/")
 
 

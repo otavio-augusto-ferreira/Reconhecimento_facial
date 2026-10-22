@@ -23,6 +23,17 @@ python experiments/e01b_operating_points.py --config configs/e01b_operating_poin
 
 Resultados agregados em `experiments/results/`. Para um teste rápido do E01, acrescente `--limit-identities 20`.
 
+Fine-tuning (E02 a E05): treina o FaceNet com a divisão de **treino** da LFW e mede validação e teste nos mesmos pares do E01b. Precisa de GPU para ser prático; veja `docs/COLAB.md`.
+
+```
+python experiments/e02_finetune.py --config configs/e02_partial_ce.yaml
+python experiments/e02_finetune.py --config configs/e03_partial_arcface.yaml
+python experiments/e02_finetune.py --config configs/e04_partial_triplet.yaml
+python experiments/e02_finetune.py --config configs/e05_full_arcface.yaml
+```
+
+Teste rápido (poucas pessoas, 2 épocas): acrescente `--limit-identities 20 --epochs 2`. Os pesos treinados ficam em `checkpoints/public/` e **não vão ao Git** (`*.pt` está no `.gitignore`).
+
 ## 3. Parte 2 — aplicação web (tudo local)
 
 ```
