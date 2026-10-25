@@ -24,11 +24,26 @@ Parcial e modesto: só a perda ArcFace melhorou a validação. O fine-tuning com
 - O threshold **depende do modelo**: o E03 escolhe 0,4609 para o mesmo critério. Thresholds não são comparáveis entre modelos.
 
 ## 5. Distribuição de similaridades (mesma pessoa contra pessoas diferentes)
-Para a LFW, `experiments/results/e01/similarity_and_roc.png` mostra os histogramas e a curva ROC. No dataset privado, `eval_private.py` imprime min, p05, mediana, p95 e máximo das similaridades dos pares das duas classes (valores agregados em `experiments/results/private*/metrics.json`).
+Para a LFW, `experiments/results/e01/similarity_and_roc.png` mostra os histogramas e a curva ROC.
+
+No dataset privado (23 pares de cada classe; valores agregados em `experiments/results/private*/metrics.json`):
+
+| Modelo | Classe | Mín. | p05 | Mediana | p95 | Máx. |
+| --- | --- | --- | --- | --- | --- | --- |
+| Pré-treinado | mesma pessoa | 0,576 | 0,624 | 0,857 | 0,928 | 0,969 |
+| Pré-treinado | pessoas diferentes | 0,264 | 0,299 | 0,444 | 0,580 | 0,605 |
+| E03 | mesma pessoa | 0,594 | 0,633 | 0,881 | 0,932 | 0,971 |
+| E03 | pessoas diferentes | 0,372 | 0,377 | 0,472 | 0,626 | 0,641 |
+
+Threshold do pré-treinado: 0,5404. O do E03: 0,4609.
 
 ## 6. Erros encontrados
 - **No dataset privado o threshold da LFW foi permissivo demais.** Com o modelo pré-treinado e 0,5404: AUC 0,9962, FRR 0,0000, mas FAR 0,2174 nos pares e 4 de 7 desconhecidos simulados aceitos. Com o E03 e 0,4609: AUC 0,9943, FAR 0,6522 e 7 de 7 desconhecidos aceitos. Em ambos, as pessoas cadastradas foram reconhecidas (7 de 7) e nenhuma foi trocada por outra.
-- O AUC alto indica que a **ordenação** das similaridades é boa e que o problema é a **calibração do threshold** para esse domínio. Hipótese (a verificar com as quantis impressas): na LFW, os pares positivos são fotos de situações diferentes, o que empurra o threshold para baixo; nas fotos privadas, tiradas em condições parecidas, os pares positivos têm similaridade mais alta, mas os negativos entre pessoas do mesmo contexto também sobem.
+- O AUC alto indica que a **ordenação** das similaridades é boa e que o problema é a **calibração do threshold** para esse domínio. A tabela da seção 5 mostra como:
+  - As similaridades de **mesma pessoa** no dataset privado são altas (mediana 0,86 a 0,88; mínimo 0,58 a 0,59), bem acima dos dois thresholds. Fotos da mesma pessoa tiradas em condições parecidas ficam muito próximas; na LFW, os pares positivos vêm de situações diferentes, o que empurra o threshold para baixo. É uma hipótese coerente com os dados, não uma demonstração.
+  - As similaridades entre **pessoas diferentes** também são altas: no pré-treinado, o percentil 95 é 0,580 e o máximo 0,605, acima do threshold 0,5404; por isso 22% dos pares negativos foram aceitos. As faixas dos dois grupos só se sobrepõem entre cerca de 0,576 e 0,605.
+  - No E03, a distribuição de pessoas diferentes se deslocou para cima (mediana 0,472; mínimo 0,372) e o threshold dele (0,4609) ficou abaixo da mediana dos negativos, por isso 65% dos pares negativos e todos os desconhecidos foram aceitos. Os thresholds não se transferem entre modelos porque cada treino muda a escala das similaridades.
+  - Um threshold próximo de 0,61 separaria quase todos os pares nesse conjunto, mas escolhê-lo com estes dados seria usar um conjunto de teste (e minúsculo) para ajustar o limiar, o que o enunciado proíbe (item 29). Fica registrado como diagnóstico, não como parâmetro.
 - O threshold **não foi reajustado** com dados privados, porque eles funcionam como conjunto de teste e são poucos.
 
 ## 7. Limitações
