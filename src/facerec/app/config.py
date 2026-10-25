@@ -21,6 +21,7 @@ class AppConfig:
     crop_margin_ratio: float = 0.0
     crop_rotate_to_eyes: bool = False
     pretrained: str = "vggface2"
+    checkpoint: str | None = None  # checkpoint fine-tunado (Parte 1); None = pesos pré-treinados
     threshold: float = 0.5404
     duplicate_threshold: float | None = None
     enroll_min_confidence: float = 0.97
@@ -52,6 +53,7 @@ def load_config(path: str | os.PathLike | None = None) -> AppConfig:
         crop_margin_ratio=crop.get("margin_ratio", d.crop_margin_ratio),
         crop_rotate_to_eyes=crop.get("rotate_to_eyes", d.crop_rotate_to_eyes),
         pretrained=raw.get("model", {}).get("pretrained", d.pretrained),
+        checkpoint=raw.get("model", {}).get("checkpoint", d.checkpoint),
         threshold=float(rec.get("threshold", d.threshold)),
         duplicate_threshold=rec.get("duplicate_threshold", d.duplicate_threshold),
         enroll_min_confidence=enr.get("min_confidence", d.enroll_min_confidence),

@@ -44,7 +44,7 @@ def build_service(config: AppConfig) -> FaceService:
         device=config.device,
         min_face_size=config.detector_min_face_size,
     )
-    embedder = FaceNetEmbedder(pretrained=config.pretrained, device=config.device)
+    embedder = FaceNetEmbedder(pretrained=config.pretrained, device=config.device, checkpoint=config.checkpoint)
     return FaceService(detector, embedder, EmbeddingStore(config.database_path), config)
 
 

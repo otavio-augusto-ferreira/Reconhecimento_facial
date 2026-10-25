@@ -13,13 +13,17 @@ class FaceNetEmbedder:
     dim = 512
     input_size = 160
 
-    def __init__(self, pretrained: str = "vggface2", device: str = "cpu"):
+    def __init__(self, pretrained: str = "vggface2", device: str = "cpu", checkpoint: str | None = None):
         import torch
         from facenet_pytorch import InceptionResnetV1  # importação adiada
 
         self._torch = torch
         self.device = device
         self.net = InceptionResnetV1(pretrained=pretrained).eval().to(device)
+        if checkpoint:  # pesos fine-tunados da Parte 1 (experiments/e02_finetune.py); ficam fora do Git
+            data = torch.load(checkpoint, map_location=device, weights_only=False)
+            self.net.load_state_dict(data["state_dict"])  # strict: falha se a arquitetura não for a mesma
+            self.net.eval()
 
     def embed(self, faces: list[Image.Image]) -> np.ndarray:
         """Embeddings L2-normalizados, com shape (n, 512), de recortes de face já alinhados."""

@@ -16,6 +16,10 @@ crop:
 
 model:
   pretrained: vggface2
+  # Para usar o modelo fine-tunado da Parte 1 (se vencer na validação), aponte para o checkpoint público
+  # (checkpoints/public/<exp>/..., fora do Git) E troque recognition.threshold pelo limiar desse experimento
+  # (metrics.json, ponto far_0.1pct). Nunca use checkpoint treinado com dados privados.
+  checkpoint: null
 
 # Threshold escolhido na VALIDAÇÃO do E01b (LFW, cosseno): menor FRR com FAR <= 0,1% (ADR-003).
 # Aceita-se quando similaridade >= threshold.
