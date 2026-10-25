@@ -1,6 +1,6 @@
 # E01 — FaceNet pré-treinado (VGGFace2), sem fine-tuning
 
-**Status**: código pronto e testado; execução no LFW completo pendente (preencher "Resultado" e "Interpretação").
+**Status**: executado no LFW completo (resultados e interpretação abaixo).
 
 ## Pergunta
 Qual o desempenho de um modelo de embeddings faciais pré-treinado, sem nenhum ajuste ao nosso conjunto, na verificação de pares do LFW? Este é o ponto de partida (baseline) contra o qual os fine-tunings (E02 em diante) serão comparados.
