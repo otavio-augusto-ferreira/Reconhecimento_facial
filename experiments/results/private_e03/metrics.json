@@ -1,0 +1,67 @@
+{
+  "dataset": "privado (resultados agregados; nenhuma foto, nome ou embedding é guardado aqui)",
+  "threshold": 0.4609,
+  "threshold_origin": "validação da LFW (E01b, FAR <= 0,1%); não ajustado com dados privados",
+  "counts": {
+    "persons": 3,
+    "images_total": 13,
+    "images_with_face": 13,
+    "images_without_face": 0
+  },
+  "verification_pairs": {
+    "accuracy": 0.6739130434782609,
+    "precision": 0.6052631578947368,
+    "recall": 1.0,
+    "f1": 0.7540983606557378,
+    "far": 0.6521739130434783,
+    "frr": 0.0,
+    "roc_auc": 0.9943289224952742,
+    "eer": 0.043478260869565216,
+    "confusion": {
+      "tp": 23,
+      "fn": 0,
+      "fp": 15,
+      "tn": 8
+    },
+    "n_pairs": 46,
+    "n_positive": 23,
+    "n_negative": 23,
+    "score_quantiles": {
+      "mesma_pessoa": {
+        "min": 0.5939,
+        "p05": 0.6334,
+        "p50": 0.8814,
+        "p95": 0.9324,
+        "max": 0.9712
+      },
+      "pessoas_diferentes": {
+        "min": 0.3717,
+        "p05": 0.3766,
+        "p50": 0.4723,
+        "p95": 0.6258,
+        "max": 0.6406
+      }
+    }
+  },
+  "identification_simulation": {
+    "n_persons": 3,
+    "n_persons_skipped_few_photos": 0,
+    "gallery_size": 2,
+    "n_gallery_images": 6,
+    "threshold": 0.4609,
+    "known_probes": {
+      "n": 7,
+      "correct": 7,
+      "wrong_person": 0,
+      "rejected": 0,
+      "correct_rate": 1.0,
+      "wrong_person_rate": 0.0,
+      "rejected_rate": 0.0
+    },
+    "unknown_probes": {
+      "n": 7,
+      "accepted": 7,
+      "false_accept_rate": 1.0
+    }
+  }
+}

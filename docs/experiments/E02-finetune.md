@@ -44,17 +44,23 @@ Saída: `experiments/results/<id>/metrics.json` (histórico por época, as duas 
 - Resultados na LFW não valem para outros grupos (ver o aviso oficial no README) nem para fotos de câmera de baixa qualidade.
 
 ## Resultado
-A preencher depois de rodar cada experimento (copie da saída do script).
+Executados: **E02 e E03** (GPU T4, Colab). **E04 (triplet) e E05 (rede inteira) não foram executados** por falta de tempo; as hipóteses H2 (parte do triplet) e H3 ficam sem teste.
 
-| Id | Melhor época | Teste AUC | Threshold (FAR ≤ 0,1%, val) | Teste FAR | Teste FRR | Falsos aceites |
-| --- | --- | --- | --- | --- | --- | --- |
-| Baseline (E01b) | — | 0,9657* | 0,5404 | 0,0017 | 0,1553 | 7 de 4172 |
-| E02 | | | | | | |
-| E03 | | | | | | |
-| E04 | | | | | | |
-| E05 | | | | | | |
+Todos os valores usam os mesmos pares do E01b, threshold FAR ≤ 0,1% escolhido na validação de cada modelo, e treino de 10 épocas (≈ 94 s por experimento na T4; 10 523 136 parâmetros treináveis).
 
-\* AUC de teste do E01 (3 000 pares). Use o AUC do baseline impresso pelo próprio script, calculado nos mesmos pares do fine-tuning.
+| Id | Melhor época | Val AUC | Val EER | Threshold | Teste AUC | Teste FAR | Teste FRR | Teste acc | Teste F1 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Pré-treinado (época 0) | 0 | 0,9828 | 0,0507 | 0,5404 | 0,9697 | 0,0017 | 0,1570 | 0,9207 | 0,9140 |
+| E02 (softmax de cosseno) | 0 | 0,9828 | 0,0507 | 0,5404 | 0,9697 | 0,0017 | 0,1570 | 0,9207 | 0,9140 |
+| E03 (ArcFace) | 8 | 0,9858 | 0,0503 | 0,4609 | 0,9714 | 0,0031 | 0,1357 | 0,9306 | 0,9257 |
+| E04 (triplet) | não executado | | | | | | | | |
+| E05 (rede inteira) | não executado | | | | | | | | |
+
+O baseline do E01b (0,9215 de acurácia no teste; 7 falsos aceites em 4172) difere por 0,0008 do pré-treinado acima. Os dois usam os mesmos pares, mas o E02/E03 usa o pipeline com recortes em cache e GPU; a causa exata da pequena diferença não foi verificada.
 
 ## Interpretação
-A preencher: H1, H2 e H3 foram confirmadas? A melhor estratégia melhora o ponto `FAR ≤ 0,1%` que a aplicação usa? Vale trocar o modelo da aplicação (ADR-001)?
+- **H1 (CE melhora a validação): refutada.** Nenhuma época de E02 superou o modelo pré-treinado; o resultado é idêntico ao da época 0.
+- **H2 (ArcFace/triplet reduzem o FRR com FAR ≤ 0,1% em relação ao E02): confirmada para o ArcFace, não testada para o triplet.** O FRR do ArcFace foi 0,0918 contra 0,0995 na validação e 0,1357 contra 0,1570 no teste.
+- **H3 (rede inteira não supera o ajuste parcial): não testada.**
+- O ganho do E03 é pequeno (EER de validação 0,0507 para 0,0503); o FAR no teste foi maior (≈ 13 contra 7 falsos aceites em 4172 pares), diferença que o acaso pode explicar com tão poucos eventos (não testado formalmente).
+- Decisão sobre o modelo da aplicação: ver `docs/decisions/ADR-001-face-model.md`. Análise completa: `docs/ANALISE.md`.

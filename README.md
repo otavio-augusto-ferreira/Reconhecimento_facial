@@ -33,10 +33,19 @@ Nota: o pré-treinamento na VGGFace2 pode ter identidades em comum com a LFW, o 
 |---|---|---|---|---|---|---|
 | E01 | FaceNet (InceptionResnetV1, VGGFace2) | pré-treinado, sem fine-tuning; threshold por acurácia na validação | público (LFW) | 0,9477 | 0,9454 | Teste, cosseno, threshold 0,4009. AUC 0,9657, EER 0,0733, FAR 0,0100, FRR 0,0947 |
 | E01b | FaceNet (InceptionResnetV1, VGGFace2) | pré-treinado; threshold por FAR ≤ 0,1% na validação (adotado na aplicação) | público (LFW) | 0,9215 | 0,9150 | Teste, threshold 0,5404. FAR 0,0017, FRR 0,1553 (7 falsos aceites em 4172 pares negativos) |
+| E02 | FaceNet (InceptionResnetV1, VGGFace2) | fine-tuning parcial (último estágio), perda ce, melhor época 0 | público (LFW, treino) | 0,9207 | 0,9140 | melhor época 0 = igual ao pré-treinado (o ajuste não melhorou a validação). Teste, threshold FAR ≤ 0,1% da validação (0,5404). AUC 0,9697, FAR 0,0017, FRR 0,1570 |
+| E03 | FaceNet (InceptionResnetV1, VGGFace2) | fine-tuning parcial (último estágio), perda arcface, melhor época 8 | público (LFW, treino) | 0,9306 | 0,9257 | Teste, threshold FAR ≤ 0,1% da validação (0,4609). AUC 0,9714, FAR 0,0031, FRR 0,1357 |
 
 Resultados com o dataset privado são apresentados apenas de forma agregada.
 
 Dataset privado (apenas adultos com consentimento; resultados agregados, threshold 0.5404 fixo da LFW): 3 pessoas e 13 fotos. Verificação em 46 pares: accuracy 0,8913, F1 0,9020, AUC 0,9962, FAR 0,2174, FRR 0,0000. Identificação com cadastro de 2 fotos por pessoa: 100.0% das tentativas de pessoas cadastradas reconhecidas corretamente e 57.1% dos desconhecidos aceitos por engano.
+
+## Análise e decisão
+
+- **Melhor configuração da Parte 1 (pela validação): E03**, FaceNet com ajuste parcial e perda ArcFace. O ganho sobre o pré-treinado é pequeno (EER de validação 0,0507 para 0,0503; FRR de teste 0,1570 para 0,1357). O E02 (softmax de cosseno) não melhorou a validação; E04 e E05 não foram executados.
+- **Aplicação (Parte 2): FaceNet pré-treinado com threshold 0,5404** (FAR <= 0,1% na validação). Desvio justificado em `docs/decisions/ADR-001-face-model.md`; o E03 está disponível em `configs/app_e03.yaml`.
+- **Limitação principal:** no dataset privado (3 pessoas, 13 fotos), o threshold escolhido na LFW foi permissivo demais para desconhecidos, embora a ordenação das similaridades seja boa (AUC acima de 0,99).
+- Análise completa (metodologia, impacto do threshold, erros, limitações, custo): `docs/ANALISE.md`.
 
 ## Reprodução
 

@@ -35,7 +35,17 @@ def aggregate_verification(emb, identities: list[str], threshold: float, seed: i
     s = cosine_scores(emb, a, b)
     m = evaluate_at_threshold(y, s, threshold)
     keys = ("accuracy", "precision", "recall", "f1", "far", "frr", "roc_auc", "eer", "confusion", "n_pairs", "n_positive", "n_negative")
-    return {k: m[k] for k in keys}
+    out = {k: m[k] for k in keys}
+    out["score_quantiles"] = {  # distribuição agregada das similaridades (descrição, item 31)
+        "mesma_pessoa": _quantiles(s[y == 1]),
+        "pessoas_diferentes": _quantiles(s[y == 0]),
+    }
+    return out
+
+
+def _quantiles(x: np.ndarray) -> dict:
+    qs = np.quantile(x, [0.0, 0.05, 0.5, 0.95, 1.0])
+    return {k: round(float(v), 4) for k, v in zip(("min", "p05", "p50", "p95", "max"), qs)}
 
 
 def identification_simulation(emb, identities: list[str], gallery_size: int, threshold: float, seed: int = 42) -> dict:

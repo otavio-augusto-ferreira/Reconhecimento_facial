@@ -103,6 +103,15 @@ python -m uvicorn facerec.app.main:app --host 127.0.0.1 --port 8000          # a
 O dataset público é obtido localmente (`data/README.md`). Nenhum dado privado faz parte do repositório."""
 
 
+ANALISE_SECTION = """## Análise e decisão
+
+- **Melhor configuração da Parte 1 (pela validação): E03**, FaceNet com ajuste parcial e perda ArcFace. O ganho sobre o pré-treinado é pequeno (EER de validação 0,0507 para 0,0503; FRR de teste 0,1570 para 0,1357). O E02 (softmax de cosseno) não melhorou a validação; E04 e E05 não foram executados.
+- **Aplicação (Parte 2): FaceNet pré-treinado com threshold 0,5404** (FAR <= 0,1% na validação). Desvio justificado em `docs/decisions/ADR-001-face-model.md`; o E03 está disponível em `configs/app_e03.yaml`.
+- **Limitação principal:** no dataset privado (3 pessoas, 13 fotos), o threshold escolhido na LFW foi permissivo demais para desconhecidos, embora a ordenação das similaridades seja boa (AUC acima de 0,99).
+- Análise completa (metodologia, impacto do threshold, erros, limitações, custo): `docs/ANALISE.md`.
+"""
+
+
 def main() -> int:
     if not README.exists():
         print("README.md não encontrado: rode na raiz do repositório.")
@@ -132,6 +141,10 @@ def main() -> int:
     sub(r"\(`src/app/`\)", "(`src/facerec/app/`)", "caminho da Parte 2")
     sub(r"## Modelos pré-treinados\n+TODO: listar modelo, fonte e licença\.\n?", MODELS_SECTION, "modelos pré-treinados")
     sub(r"TODO: instruções de ambiente, download dos datasets e execução dos experimentos\.", REPRO_SECTION, "reprodução")
+
+    if "## Análise e decisão" not in text and "## Reprodução" in text:
+        text = text.replace("## Reprodução", ANALISE_SECTION + "\n## Reprodução", 1)
+        changes.append("análise e decisão")
 
     para = private_paragraph()
     marker = "Resultados com o dataset privado são apresentados apenas de forma agregada."

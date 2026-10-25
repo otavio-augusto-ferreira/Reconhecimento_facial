@@ -5,6 +5,7 @@ Use ids anônimos (p01, p02, ...), nunca nomes. Cada pessoa precisa de pelo meno
 
 Uso (na raiz do repositório, com o ambiente ativo):
     python experiments/eval_private.py
+Para avaliar outro modelo: --config configs/app_e03.yaml --output-dir experiments/results/private_e03.
 O threshold vem de configs/app.yaml (escolhido na validação da LFW, ADR-003) e NÃO é ajustado com estes dados.
 Sai só um resumo agregado em experiments/results/private/metrics.json (sem nomes, caminhos nem embeddings).
 """
@@ -41,8 +42,8 @@ def main() -> None:
     from facerec.models.facenet import FaceNetEmbedder
 
     detector = FaceDetector(cfg.detector_min_confidence, cfg.device, cfg.detector_min_face_size)
-    embedder = FaceNetEmbedder(cfg.pretrained, cfg.device)
-    signature = "|".join(str(v) for v in (cfg.pretrained, cfg.detector_min_confidence, cfg.detector_min_face_size, cfg.crop_margin_ratio, cfg.crop_rotate_to_eyes))
+    embedder = FaceNetEmbedder(cfg.pretrained, cfg.device, checkpoint=cfg.checkpoint)
+    signature = "|".join(str(v) for v in (cfg.pretrained, cfg.checkpoint, cfg.detector_min_confidence, cfg.detector_min_face_size, cfg.crop_margin_ratio, cfg.crop_rotate_to_eyes))
     res = compute_embeddings(
         [p for p, _ in items], detector, embedder,
         margin_ratio=cfg.crop_margin_ratio, rotate=cfg.crop_rotate_to_eyes,
@@ -78,6 +79,9 @@ def main() -> None:
     print(f"\n=== dataset privado (agregado) | threshold {cfg.threshold} (fixo, da LFW)")
     print(f"pessoas: {c['persons']} | fotos: {c['images_with_face']} com face, {c['images_without_face']} sem face")
     print(f"pares de verificação: {v['n_pairs']} | accuracy {v['accuracy']:.4f} | F1 {v['f1']:.4f} | AUC {v['roc_auc']:.4f} | FAR {v['far']:.4f} | FRR {v['frr']:.4f}")
+    q = v["score_quantiles"]
+    for nome, d in q.items():
+        print(f"similaridade {nome:19}: min {d['min']:.3f} | p05 {d['p05']:.3f} | mediana {d['p50']:.3f} | p95 {d['p95']:.3f} | max {d['max']:.3f}")
     print(f"identificação (cadastro de {s['gallery_size']} fotos por pessoa):")
     print(f"  pessoas cadastradas: {k['correct']}/{k['n']} reconhecidas ({k['correct_rate']:.1%}), {k['wrong_person']} trocadas por outra pessoa, {k['rejected']} rejeitadas")
     print(f"  desconhecidos: {u['accepted']}/{u['n']} aceitos por engano ({u['false_accept_rate']:.1%})")

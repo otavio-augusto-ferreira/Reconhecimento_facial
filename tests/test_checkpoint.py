@@ -41,3 +41,8 @@ def test_config_le_o_checkpoint(tmp_path):
     cfg.write_text("model:\n  pretrained: vggface2\n  checkpoint: checkpoints/public/e02/model.pt\n", encoding="utf-8")
     assert load_config(cfg).checkpoint == "checkpoints/public/e02/model.pt"
     assert load_config("configs/app.yaml").checkpoint is None
+
+
+def test_checkpoint_ausente_da_erro_claro(tmp_path):
+    with pytest.raises(FileNotFoundError, match="Checkpoint não encontrado"):
+        FaceNetEmbedder(pretrained="vggface2", checkpoint=str(tmp_path / "nao_existe.pt"))

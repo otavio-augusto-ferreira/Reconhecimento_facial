@@ -62,3 +62,6 @@ def test_verificacao_agregada_em_pares():
     emb, ids = _people()
     m = aggregate_verification(emb, ids, threshold=0.6)
     assert m["far"] == 0.0 and m["frr"] == 0.0 and m["roc_auc"] == 1.0 and m["n_pairs"] > 0
+    q = m["score_quantiles"]
+    assert q["mesma_pessoa"]["p50"] > q["pessoas_diferentes"]["p50"]
+    assert q["mesma_pessoa"]["min"] <= q["mesma_pessoa"]["p50"] <= q["mesma_pessoa"]["max"]

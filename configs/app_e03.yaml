@@ -1,0 +1,39 @@
+# Configuração da aplicação web (Parte 2). Nada aqui é dado pessoal.
+# Os parâmetros do detector e do recorte são os mesmos do E01 (configs/e01_facenet_baseline.yaml).
+
+database_path: database/facerec.db   # fora do Git (database/ está no .gitignore)
+log_path: logs/app.log               # fora do Git; sem dados biométricos
+device: cpu
+
+detector:
+  min_confidence: 0.9
+  min_face_size: 20
+
+crop:
+  size: 160
+  margin_ratio: 0.0
+  rotate_to_eyes: false
+
+model:
+  pretrained: vggface2
+  # Para usar o modelo fine-tunado da Parte 1 (se vencer na validação), aponte para o checkpoint público
+  # (checkpoints/public/<exp>/..., fora do Git) E troque recognition.threshold pelo limiar desse experimento
+  # (metrics.json, ponto far_0.1pct). Nunca use checkpoint treinado com dados privados.
+  checkpoint: checkpoints/public/e03.pt    # gerado por e02_finetune.py com configs/e03_partial_arcface.yaml (fora do Git)
+
+# Threshold escolhido na VALIDAÇÃO do E01b (LFW, cosseno): menor FRR com FAR <= 0,1% (ADR-003).
+# Aceita-se quando similaridade >= threshold.
+recognition:
+  threshold: 0.4609                  # limiar do E03 na VALIDAÇÃO (FAR <= 0,1%), metrics.json de e03, ponto far_0.1pct
+  duplicate_threshold: null          # null = usa o mesmo valor de recognition.threshold
+
+# Qualidade mínima exigida no CADASTRO (spec 002, R3).
+enrollment:
+  min_confidence: 0.97
+  min_face_px: 80                    # menor lado da caixa da face, em pixels
+  max_images: 10
+  max_name_length: 80
+
+image:
+  max_bytes: 10485760                # 10 MB por imagem
+  max_side: 1280                     # imagens maiores são reduzidas antes da detecção

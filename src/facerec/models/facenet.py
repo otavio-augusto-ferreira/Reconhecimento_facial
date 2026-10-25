@@ -5,6 +5,8 @@ guardados no cache do PyTorch do usuário; não são versionados no Git.
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 from PIL import Image
 
@@ -20,6 +22,11 @@ class FaceNetEmbedder:
         self._torch = torch
         self.device = device
         self.net = InceptionResnetV1(pretrained=pretrained).eval().to(device)
+        if checkpoint and not Path(checkpoint).is_file():
+            raise FileNotFoundError(
+                f"Checkpoint não encontrado: {checkpoint}. Gere-o com experiments/e02_finetune.py (veja docs/COLAB.md) "
+                "ou use model.checkpoint: null com o threshold do modelo pré-treinado (configs/app.yaml)."
+            )
         if checkpoint:  # pesos fine-tunados da Parte 1 (experiments/e02_finetune.py); ficam fora do Git
             data = torch.load(checkpoint, map_location=device, weights_only=False)
             self.net.load_state_dict(data["state_dict"])  # strict: falha se a arquitetura não for a mesma

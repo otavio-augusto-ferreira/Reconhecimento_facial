@@ -25,7 +25,23 @@
     },
     "n_pairs": 46,
     "n_positive": 23,
-    "n_negative": 23
+    "n_negative": 23,
+    "score_quantiles": {
+      "mesma_pessoa": {
+        "min": 0.5757,
+        "p05": 0.6237,
+        "p50": 0.8572,
+        "p95": 0.9281,
+        "max": 0.9688
+      },
+      "pessoas_diferentes": {
+        "min": 0.2636,
+        "p05": 0.2992,
+        "p50": 0.4439,
+        "p95": 0.5801,
+        "max": 0.6045
+      }
+    }
   },
   "identification_simulation": {
     "n_persons": 3,
