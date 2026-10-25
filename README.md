@@ -5,7 +5,7 @@ Trabalho prático da disciplina de Inteligência Artificial (UFMS). Autores: Tav
 Sistema de reconhecimento facial baseado em embeddings, desenvolvido com Spec-Driven Development.
 
 - **Parte 1**: experimentação, treinamento e fine-tuning (`experiments/`).
-- **Parte 2**: aplicação web de cadastro e reconhecimento (`src/app/`).
+- **Parte 2**: aplicação web de cadastro e reconhecimento (`src/facerec/app/`).
 
 ## Privacidade e LGPD
 
@@ -20,19 +20,37 @@ Ao clonar, a aplicação inicia com "Nenhuma pessoa cadastrada".
 
 ## Modelos pré-treinados
 
-TODO: listar modelo, fonte e licença.
+| Modelo | Fonte | Pesos | Licença / termos | Uso no projeto |
+|---|---|---|---|---|
+| FaceNet (InceptionResnetV1) | pacote `facenet-pytorch` (https://github.com/timesler/facenet-pytorch) | Treinados na VGGFace2 (o README do pacote cita também a CASIA-Webface); baixados automaticamente na primeira execução (cerca de 107 MB) e não versionados | Código do pacote: MIT (verificado na página do repositório em 25/10/2026). O README do pacote não informa a licença dos pesos nem os termos da VGGFace2, e não localizei termos oficiais da VGGFace2; usamos apenas os pesos prontos, sem baixar nem redistribuir a base. Pendente: confirmar com o professor | Embeddings de 512 dimensões: baseline e ponto de partida do fine-tuning |
+| MTCNN | pacote `facenet-pytorch` | Incluídos no pacote; o README não informa a origem nem a licença dos pesos | Código do pacote: MIT. Licença dos pesos: não informada na fonte | Detecção de faces e pontos de referência |
+
+Nota: o pré-treinamento na VGGFace2 pode ter identidades em comum com a LFW, o que pode tornar os resultados otimistas (limitação registrada).
 
 ## Resultados (Parte 1)
 
 | Experimento | Modelo | Estratégia | Dataset | Accuracy | F1 | Observação |
 |---|---|---|---|---|---|---|
-| E01 | FaceNet (InceptionResnetV1, VGGFace2) | pré-treinado, sem fine-tuning | público (LFW) | 0,9477 | 0,9454 | Teste, cosseno, threshold 0,4009 escolhido na validação. AUC 0,9657, EER 0,0733, FAR 0,0100, FRR 0,0947 |
+| E01 | FaceNet (InceptionResnetV1, VGGFace2) | pré-treinado, sem fine-tuning; threshold por acurácia na validação | público (LFW) | 0,9477 | 0,9454 | Teste, cosseno, threshold 0,4009. AUC 0,9657, EER 0,0733, FAR 0,0100, FRR 0,0947 |
+| E01b | FaceNet (InceptionResnetV1, VGGFace2) | pré-treinado; threshold por FAR ≤ 0,1% na validação (adotado na aplicação) | público (LFW) | 0,9215 | 0,9150 | Teste, threshold 0,5404. FAR 0,0017, FRR 0,1553 (7 falsos aceites em 4172 pares negativos) |
 
 Resultados com o dataset privado são apresentados apenas de forma agregada.
 
+Dataset privado (apenas adultos com consentimento; resultados agregados, threshold 0.5404 fixo da LFW): 3 pessoas e 13 fotos. Verificação em 46 pares: accuracy 0,8913, F1 0,9020, AUC 0,9962, FAR 0,2174, FRR 0,0000. Identificação com cadastro de 2 fotos por pessoa: 100.0% das tentativas de pessoas cadastradas reconhecidas corretamente e 57.1% dos desconhecidos aceitos por engano.
+
 ## Reprodução
 
-TODO: instruções de ambiente, download dos datasets e execução dos experimentos.
+Veja `docs/EXECUCAO.md` (ambiente, experimentos e aplicação) e `docs/COLAB.md` (fine-tuning na GPU do Colab). Resumo:
+
+```
+pip install -r requirements.txt && pytest
+python experiments/e01_facenet_baseline.py --config configs/e01_facenet_baseline.yaml
+python experiments/e01b_operating_points.py --config configs/e01b_operating_points.yaml
+python experiments/e02_finetune.py --config configs/e02_partial_ce.yaml      # GPU (Colab)
+python -m uvicorn facerec.app.main:app --host 127.0.0.1 --port 8000          # aplicação em http://127.0.0.1:8000
+```
+
+O dataset público é obtido localmente (`data/README.md`). Nenhum dado privado faz parte do repositório.
 
 ## Estrutura
 

@@ -1,0 +1,51 @@
+{
+  "dataset": "privado (resultados agregados; nenhuma foto, nome ou embedding é guardado aqui)",
+  "threshold": 0.5404,
+  "threshold_origin": "validação da LFW (E01b, FAR <= 0,1%); não ajustado com dados privados",
+  "counts": {
+    "persons": 3,
+    "images_total": 13,
+    "images_with_face": 13,
+    "images_without_face": 0
+  },
+  "verification_pairs": {
+    "accuracy": 0.8913043478260869,
+    "precision": 0.8214285714285714,
+    "recall": 1.0,
+    "f1": 0.9019607843137255,
+    "far": 0.21739130434782608,
+    "frr": 0.0,
+    "roc_auc": 0.9962192816635161,
+    "eer": 0.043478260869565216,
+    "confusion": {
+      "tp": 23,
+      "fn": 0,
+      "fp": 5,
+      "tn": 18
+    },
+    "n_pairs": 46,
+    "n_positive": 23,
+    "n_negative": 23
+  },
+  "identification_simulation": {
+    "n_persons": 3,
+    "n_persons_skipped_few_photos": 0,
+    "gallery_size": 2,
+    "n_gallery_images": 6,
+    "threshold": 0.5404,
+    "known_probes": {
+      "n": 7,
+      "correct": 7,
+      "wrong_person": 0,
+      "rejected": 0,
+      "correct_rate": 1.0,
+      "wrong_person_rate": 0.0,
+      "rejected_rate": 0.0
+    },
+    "unknown_probes": {
+      "n": 7,
+      "accepted": 4,
+      "false_accept_rate": 0.5714285714285714
+    }
+  }
+}
