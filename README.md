@@ -1,6 +1,6 @@
 # Reconhecedor Facial
 
-Trabalho prático da disciplina de Inteligência Artificial (UFMS). Autores: Tavinho e Vinicius.
+Trabalho prático da disciplina de Inteligência Artificial (UFMS). Autores: Otávio Augusto da Silva Ferreira e Vinícius Rodrigues da Silva Cardoso.
 
 Sistema de reconhecimento facial baseado em embeddings, desenvolvido com Spec-Driven Development.
 
